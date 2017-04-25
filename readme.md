@@ -1,5 +1,4 @@
-[![Dependency Status](https://www.versioneye.com/user/projects/58f5d854d83fb90042392809/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58f5d854d83fb90042392809)
-
+[![Dependency Status](https://www.versioneye.com/user/projects/58feffdb6ac171426c4147e3/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58feffdb6ac171426c4147e3) [![Total Downloads](https://poser.pugx.org/sctv/security-module/downloads)](https://packagist.org/packages/sctv/security-module) [![Build Status](https://travis-ci.org/showcase-tv/ci-security-module.svg?branch=master)](https://travis-ci.org/showcase-tv/ci-security-module) [![Coverage Status](https://coveralls.io/repos/github/showcase-tv/ci-security-module/badge.svg?branch=master)](https://coveralls.io/github/showcase-tv/ci-security-module?branch=master) [![Code Climate](https://codeclimate.com/github/showcase-tv/ci-security-module/badges/gpa.svg)](https://codeclimate.com/github/showcase-tv/ci-security-module)
 # SCTV Security Module
 
 ## 概要
