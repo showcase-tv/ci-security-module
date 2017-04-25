@@ -1,0 +1,32 @@
+{
+    "name": "sctv/security-module",
+    "description": "Codeigniter SecurityModule with annotation",
+    "type": "library",
+    "authors": [
+        {
+            "name": "SCTV",
+            "email": "harmony@showcase-tv.com"
+        }
+    ],
+    "keywords": [
+        "codeigniter",
+        "auth module",
+        "security module"
+    ],
+    "license": [
+        "MIT"
+    ],
+    "require": {
+        "doctrine/annotations": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.*",
+        "mockery/mockery": "dev-master",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "SCTV\\Security\\": ""
+        }
+    }
+}
