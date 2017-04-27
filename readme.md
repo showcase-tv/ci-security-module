@@ -36,7 +36,7 @@ $config['composer_autoload'] = TRUE;
 $config['enable_hooks'] = TRUE;
 ```
 
-`application/config/hook.php`に下記を追記します。
+`application/config/hooks.php`に下記を追記します。
 
 ```php
 $hook['post_controller_constructor'][] = function() {
