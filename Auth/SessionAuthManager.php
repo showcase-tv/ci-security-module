@@ -76,8 +76,8 @@ class SessionAuthManager implements AuthManagerInterface
      */
     protected function setAttributes($key, $value)
     {
-        $_key = $this->domain . '.' . $key;
-        $this->session->set($_key, $value);
+        $sessionKey = $this->domain . '.' . $key;
+        $this->session->set($sessionKey, $value);
     }
 
     /**
@@ -89,7 +89,7 @@ class SessionAuthManager implements AuthManagerInterface
      */
     protected function getAttributes($key, $default = null)
     {
-        $_key = $this->domain . '.' . $key;
-        return $this->session->get($_key, $default);
+        $sessionKey = $this->domain . '.' . $key;
+        return $this->session->get($sessionKey, $default);
     }
 }

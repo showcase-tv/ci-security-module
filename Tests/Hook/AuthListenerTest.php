@@ -107,6 +107,16 @@ class AuthListenerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
         $this->authListener->authenticate();
     }
 
+    public function testHasAllowedRoles()
+    {
+        $this->context->shouldReceive('isSecure')->once()->andReturn(true);
+        $this->context->shouldReceive('isAuthenticated')->once()->andReturn(true);
+        $this->context->shouldReceive('hasAllowedRoles')->once()->andReturn(true);
+        $this->context->shouldReceive('setPreviousUrl')->never();
+
+        $this->authListener->authenticate();
+    }
+
     /**
      * @expectedException        \Exception
      * @expectedExceptionMessage redirect_urlを設定してください。
@@ -122,6 +132,14 @@ class AuthListenerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
         $this->context->shouldReceive('getRedirectUrl')->twice()->andReturn('redirect_url');
         self::$header->shouldReceive('call')->with('location: redirect_url')->once();
         $this->authListener->redirect();
+    }
+
+    public function testPostControllerConstructor()
+    {
+        $this->authListener->shouldReceive('load')->once();
+        $this->authListener->shouldReceive('authenticate')->once();
+
+        $this->authListener->postControllerConstructor();
     }
 
 }
