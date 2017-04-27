@@ -23,6 +23,11 @@ class SecurityContextTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
         $this->context->isAuthenticated();
     }
 
+    public function testDefault()
+    {
+        $this->assertEquals('secure', $this->context->domain);
+    }
+
     public function testSetSecure()
     {
         $this->context->setSecure(true);
