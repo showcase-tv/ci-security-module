@@ -24,16 +24,16 @@ class AnnotationLoader
 
     public function load(SecurityContext $context, \ReflectionClass $class, \ReflectionMethod $method)
     {
-        $_class = $class;
-        $_classes = [$_class];
-        while ($_class = $_class->getParentClass()) {
-            $_classes[] = $_class;
+        $tmpClass = $class;
+        $tmpClasses = [$tmpClass];
+        while ($tmpClass = $tmpClass->getParentClass()) {
+            $tmpClasses[] = $tmpClass;
         }
-        $_classes = array_reverse($_classes);
+        $tmpClasses = array_reverse($tmpClasses);
 
         $annotations = [];
-        foreach ($_classes as $_class) {
-            $annotations = array_merge($annotations, $this->reader->getClassAnnotations($_class));
+        foreach ($tmpClasses as $tmpClass) {
+            $annotations = array_merge($annotations, $this->reader->getClassAnnotations($tmpClass));
         }
 
         $annotations = array_merge($annotations, $this->reader->getMethodAnnotations($method));
