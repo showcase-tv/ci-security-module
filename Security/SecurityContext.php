@@ -9,7 +9,7 @@ class SecurityContext
 {
     protected static $instance;
     public $secure = false;
-    public $domain = 'secured';
+    public $domain = 'secure';
     public $redirectUrl;
     public $allowedRoles = [];
     public $previousUrlHolder;
