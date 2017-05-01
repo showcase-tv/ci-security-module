@@ -8,13 +8,13 @@ use SCTV\Security\Role\RoleManagerInterface;
 class SecurityContext
 {
     protected static $instance;
-    public $secure = false;
-    public $domain = 'secure';
-    public $redirectUrl;
-    public $allowedRoles = [];
-    public $previousUrlHolder;
-    public $roleManager;
-    public $authManager;
+    protected $secure = false;
+    protected $domain = 'secure';
+    protected $redirectUrl;
+    protected $allowedRoles = [];
+    protected $previousUrlHolder;
+    protected $roleManager;
+    protected $authManager;
 
     private function __construct()
     {

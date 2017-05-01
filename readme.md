@@ -200,7 +200,7 @@ $isAuth = \SCTV\Security\Security\SecurityContext::getInstance()->isAuthenticate
 
 ```php
 $securityContext = \SCTV\Security\Security\SecurityContext::getInstance();
-if ($securityContext->isAuthentiated()) {
+if ($securityContext->isAuthenticated()) {
     //認証済み
 } else {
     //未認証

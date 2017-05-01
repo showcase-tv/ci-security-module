@@ -3,185 +3,159 @@
 namespace SCTV\Security\Security;
 
 use Mockery as M;
+use SCTV\Security\Auth\AuthManagerInterface;
+use SCTV\Security\Role\RoleManagerInterface;
 
 class SecurityContextTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
 {
     /** @var  SecurityContext */
     private $context;
 
+    /** @var  \Mockery\MockInterface */
+    private $roleManager;
+    /** @var  \Mockery\MockInterface */
+    private $previousUrlHolder;
+    /** @var  \Mockery\MockInterface */
+    private $authManager;
+
     public function setUp()
     {
+        $this->roleManager = M::mock(RoleManagerInterface::class);
+        $this->previousUrlHolder = M::mock(PreviousUrlHolder::class);
+        $this->authManager = M::mock(AuthManagerInterface::class);
+
         $this->context = SecurityContext::getInstance();
-        $this->context->roleManager = M::mock();
-        $this->context->previousUrlHolder = M::mock();
-        $this->context->authManager = M::mock();
+        $this->context->setRoleManager($this->roleManager);
+        $this->context->setPreviousUrlHolder($this->previousUrlHolder);
+        $this->context->setAuthManager($this->authManager);
+    }
+
+    public function tearDown()
+    {
+        M::close();
     }
 
     public function testCallIsAuthenticated()
     {
-        $this->context->authManager->shouldReceive('isAuthenticated')->once();
-        $this->context->isAuthenticated();
+        $this->authManager->shouldReceive('isAuthenticated')->once()->andReturn(true);
+        $this->assertTrue(true, $this->context->isAuthenticated());
     }
 
     public function testDefault()
     {
-        $this->assertEquals('secure', $this->context->domain);
+        $this->assertEquals('secure', $this->context->getDomain());
     }
 
     public function testSetSecure()
     {
+        $this->assertFalse($this->context->isSecure());
         $this->context->setSecure(true);
-        $this->assertTrue($this->context->secure);
+        $this->assertTrue($this->context->isSecure());
     }
 
-    public function testIsSecure()
-    {
-        $this->assertEquals($this->context->secure, $this->context->isSecure());
-    }
-
-    public function testSetDomain()
+    public function testDomain()
     {
         $this->context->setDomain('test_domain');
-        $this->assertEquals('test_domain', $this->context->domain);
-    }
-
-    public function testGetDomain()
-    {
-        $this->context->domain = 'test_domain';
         $this->assertEquals('test_domain', $this->context->getDomain());
     }
 
-    public function testSetRedirectUrl()
+    public function testRedirectUrl()
     {
         $this->context->setRedirectUrl('redirect_url');
-        $this->assertEquals('redirect_url', $this->context->redirectUrl);
-    }
-
-    public function testGetRedirectUrl()
-    {
-        $this->context->redirectUrl = 'redirect_url';
         $this->assertEquals('redirect_url', $this->context->getRedirectUrl());
     }
 
-    public function testSetAllowedRoles()
+    public function testAllowedRoles()
     {
         $this->context->setAllowedRoles('role1');
-        $this->assertEquals(['role1'], $this->context->allowedRoles);
-    }
-
-    public function testGetAllowdRoles()
-    {
-        $this->context->allowedRoles = ['role1'];
         $this->assertEquals(['role1'], $this->context->getAllowedRoles());
     }
 
-    public function testSetAuthManager()
+    public function testAuthManager()
     {
         $mock = M::mock('SCTV\Security\Auth\AuthManagerInterface');
         $this->context->setAuthManager($mock);
-        $this->assertEquals($mock, $this->context->authManager);
-    }
-
-    public function testGetAuthManager()
-    {
-        $this->context->authManager = M::mock('SCTV\Security\Auth\AuthManagerInterface');
-        $this->assertEquals($this->context->authManager, $this->context->getAuthManager());
+        $this->assertEquals($mock, $this->context->getAuthManager());
     }
 
     public function testFixDomain()
     {
-        $this->context->domain = 'test_domain';
-        $this->context->authManager = M::mock()->shouldReceive('setDomain')->with('test_domain')->once()->getMock();
-        $this->context->roleManager = M::mock()->shouldReceive('setDomain')->with('test_domain')->once()->getMock();
-        $this->context->previousUrlHolder = M::mock()->shouldReceive('setUp')->with('test_domain')->once()->getMock();
+        $this->context->setDomain('test_domain');
+        $this->authManager->shouldReceive('setDomain')->with('test_domain')->getMock();
+        $this->roleManager->shouldReceive('setDomain')->with('test_domain')->once()->getMock();
+        $this->previousUrlHolder->shouldReceive('setUp')->with('test_domain')->once()->getMock();
         $this->context->fixDomain();
     }
 
     public function testSignIn()
     {
-        $this->context->authManager = M::mock()->shouldReceive('signIn')->with(['user_data'])->once()->getMock();
+        $this->authManager->shouldReceive('signIn')->with(['user_data'])->once()->getMock();
         $this->context->signIn(['user_data']);
     }
 
     public function testSignOut()
     {
-        $this->context->authManager = M::mock()->shouldReceive('signOut')->once()->getMock();
-        $this->context->roleManager = M::mock()->shouldReceive('clearRoles')->once()->getMock();
+        $this->authManager->shouldReceive('signOut')->once()->getMock();
+        $this->roleManager->shouldReceive('clearRoles')->once()->getMock();
         $this->context->signOut();
     }
 
     public function testGetUser()
     {
-        $this->context->authManager = M::mock()->shouldReceive('getUser')->once()->getMock();
+        $this->authManager->shouldReceive('getUser')->once()->getMock();
         $this->context->getUser();
     }
 
-    public function testSetPreviousUrlHolder()
+    public function testPreviousUrlHolder()
     {
-        $mock = M::mock('SCTV\Security\Security\PreviousUrlHolder');
-        $this->context->setPreviousUrlHolder($mock);
-        $this->assertEquals($mock, $this->context->previousUrlHolder);
+        $this->assertEquals($this->previousUrlHolder, $this->context->getPreviousUrlHolder());
     }
 
-    public function testGetPreviousUrlHolder()
+    public function testRoleManager()
     {
-        $this->context->previousUrlHolder = M::mock('SCTV\Security\Security\PreviousUrlHolder');
-        $this->assertEquals($this->context->previousUrlHolder, $this->context->getPreviousUrlHolder());
-    }
-
-    public function testSetRoleManager()
-    {
-        $mock = M::mock('SCTV\Security\Role\RoleManagerInterface');
-        $this->context->setRoleManager($mock);
-        $this->assertEquals($mock, $this->context->roleManager);
-    }
-
-    public function testGetRoleManager()
-    {
-        $this->context->roleManager = M::mock('SCTV\Security\Role\RoleManagerInterface');
-        $this->assertEquals($this->context->roleManager, $this->context->getRoleManager());
+        $this->assertEquals($this->roleManager, $this->context->getRoleManager());
     }
 
     public function testHasAllowedRoles()
     {
-        $this->context->allowedRoles = ['role1'];
-        $this->context->roleManager = M::mock()->shouldReceive('hasRole')->with(['role1'])->once()->getMock();
+        $this->context->setAllowedRoles(['role1']);
+        $this->roleManager->shouldReceive('hasRole')->with(['role1'])->once()->getMock();
         $this->context->hasAllowedRoles();
     }
 
     public function testHasRole()
     {
-        $this->context->roleManager = M::mock()->shouldReceive('hasRole')->with(['role1'])->once()->getMock();
+        $this->roleManager->shouldReceive('hasRole')->with(['role1'])->once()->getMock();
         $this->context->hasRole(['role1']);
     }
 
     public function testSetRoles()
     {
-        $this->context->roleManager = M::mock()->shouldReceive('setRoles')->with(['role1'])->once()->getMock();
+        $this->roleManager->shouldReceive('setRoles')->with(['role1'])->once()->getMock();
         $this->context->setRoles(['role1']);
     }
 
     public function testAddRoles()
     {
-        $this->context->roleManager = M::mock()->shouldReceive('addRoles')->with(['role1'])->once()->getMock();
+        $this->roleManager->shouldReceive('addRoles')->with(['role1'])->once()->getMock();
         $this->context->addRoles(['role1']);
     }
 
     public function testHasPreviousUrl()
     {
-        $this->context->previousUrlHolder = M::mock()->shouldReceive('has')->once()->getMock();
+        $this->previousUrlHolder->shouldReceive('has')->once()->getMock();
         $this->context->hasPreviousUrl();
     }
 
     public function testSetPreviousUrl()
     {
-        $this->context->previousUrlHolder = M::mock()->shouldReceive('set')->with('previous_url')->once()->getMock();
+        $this->previousUrlHolder->shouldReceive('set')->with('previous_url')->once()->getMock();
         $this->context->setPreviousUrl('previous_url');
     }
 
     public function testGetPrevioudUrl()
     {
-        $this->context->previousUrlHolder = M::mock()->shouldReceive('get')->once()->getMock();
+        $this->previousUrlHolder->shouldReceive('get')->once()->getMock();
         $this->context->getPreviousUrl();
     }
 }

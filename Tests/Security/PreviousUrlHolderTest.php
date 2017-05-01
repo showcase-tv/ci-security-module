@@ -16,7 +16,6 @@ class PreviousUrlHolderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
     {
         $this->session = M::mock(SessionInterface::class);
         $this->urlHolder = new PreviousUrlHolder($this->session);
-
         $this->session->shouldReceive('get')->with('test_domain.' . PreviousUrlHolder::PREVIOUSURL, null)->once();
         $this->urlHolder->setUp('test_domain');
     }
@@ -34,30 +33,22 @@ class PreviousUrlHolderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
 
     public function testHasUrlReturnFalse()
     {
-        $this->urlHolder->url = null;
         $this->assertFalse($this->urlHolder->has());
     }
 
     public function testHasUrlReturnTrue()
     {
-        $this->urlHolder->url = 'redirect_url';
+        $this->session->shouldReceive('set')->once();
+        $this->urlHolder->set('redirect_url');
         $this->assertTrue($this->urlHolder->has());
     }
 
-    public function testGetUrl()
-    {
-        $this->urlHolder->url = 'redirect_url';
-        $this->session->shouldReceive('remove')->with('test_domain.' . PreviousUrlHolder::PREVIOUSURL)->once();
-        $this->assertEquals('redirect_url', $this->urlHolder->get());
-    }
-
-    public function testSetUrl()
+    public function testUrl()
     {
         $this->session->shouldReceive('set')->with('test_domain.' . PreviousUrlHolder::PREVIOUSURL,
             'redirect_url')->once();
         $this->urlHolder->set('redirect_url');
-
-        $this->assertEquals('redirect_url', $this->urlHolder->url);
+        $this->session->shouldReceive('remove')->with('test_domain.' . PreviousUrlHolder::PREVIOUSURL)->once();
+        $this->assertEquals('redirect_url', $this->urlHolder->get());
     }
-
 }
