@@ -16,7 +16,6 @@ class PreviousUrlHolderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
     {
         $this->session = M::mock(SessionInterface::class);
         $this->urlHolder = new PreviousUrlHolder($this->session);
-
         $this->session->shouldReceive('get')->with('test_domain.' . PreviousUrlHolder::PREVIOUSURL, null)->once();
         $this->urlHolder->setUp('test_domain');
     }
