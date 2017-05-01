@@ -8,9 +8,9 @@ class PreviousUrlHolder
 {
     const PREVIOUSURL = 'sctv_previous_url';
 
-    public $session;
-    public $domain;
-    public $url;
+    protected $session;
+    protected $domain;
+    protected $url;
 
     /**
      * PreviousUrlHolder constructor.
@@ -24,12 +24,12 @@ class PreviousUrlHolder
     /**
      * 初期化と初期値設定を行います。
      *
-     * @param string $domain    ドメイン（認証エリア識別名）
+     * @param string $domain ドメイン（認証エリア識別名）
      */
     public function setUp($domain)
     {
         $this->domain = $domain;
-        $this->url = $this->session->get($this->domain.'.'.self::PREVIOUSURL, null);
+        $this->url = $this->session->get($this->domain . '.' . self::PREVIOUSURL, null);
     }
 
     /**
@@ -52,7 +52,7 @@ class PreviousUrlHolder
      */
     public function get()
     {
-        $this->session->remove($this->domain.'.'.self::PREVIOUSURL);
+        $this->session->remove($this->domain . '.' . self::PREVIOUSURL);
         return $this->url;
     }
 
@@ -64,7 +64,7 @@ class PreviousUrlHolder
     public function set($url)
     {
         $this->url = $url;
-        $this->session->set($this->domain.'.'.self::PREVIOUSURL, $url);
+        $this->session->set($this->domain . '.' . self::PREVIOUSURL, $url);
     }
 
 }
