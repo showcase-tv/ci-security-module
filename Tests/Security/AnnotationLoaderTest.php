@@ -3,38 +3,26 @@
 namespace SCTV\Security\Security;
 
 use Mockery as M;
-use SCTV\Security\Security\AnnotationLoader;
-use SCTV\Security\Session\SessionInterface;
 use SCTV\Security\Tests\Fixtures\UserController;
 use SCTV\Security\Tests\Fixtures\AdminController;
 
-function get_instance()
-{
-    return AnnotationLoaderTest::$function->get_instance();
-}
-
 /**
- * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
+ * @runTestsInSeparateProcesses
  */
 class AnnotationLoaderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
 {
-    public $CI;
-    public static $function;
-
     public function setUp()
     {
-        $session = M::mock('overload:SCTV\Security\Session\SessionCI', 'SCTV\Security\Session\SessionInterface');
-        $session->shouldReceive('get')->andReturnUsing(function ($param, $default) {
-            return $default;
-        });
-//        $session->shouldReceive('set');
-        //M::mock('overload:SCTV\Security\Security\SessionAuthManager');
+        M::mock('overload:SCTV\Security\Session\SessionCI', 'SCTV\Security\Session\SessionInterface')
+            ->shouldReceive('get')->once()->andReturnUsing(function ($param, $default) {
+                return $default;
+            })->getMock();
     }
 
-    public function ret($param, $default)
+    public function tearDown()
     {
-        return $default;
+        M::close();
     }
 
     /**
@@ -58,7 +46,7 @@ class AnnotationLoaderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase
 
     public function getAnnotationData()
     {
-        // class, secure, role, redirect_url
+        // class, page, secure, domain, role, redirect_url
         return [
             [new UserController(), 'securePage', true, 'user', ['normal'], '/signin'],
             [new UserController(), 'otherRedirectPage', true, 'secure', ['normal'], '/other_page'],

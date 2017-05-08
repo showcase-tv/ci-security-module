@@ -12,7 +12,7 @@ use SCTV\Security\Auth\SessionAuthManager;
 
 class AnnotationLoader
 {
-    public $reader;
+    protected $reader;
 
     public function __construct()
     {
@@ -57,7 +57,7 @@ class AnnotationLoader
     {
         $sessionManager = new SessionCI();
 
-        if ($context->getAuthManager() === null ) {
+        if ($context->getAuthManager() === null) {
             $authManager = new SessionAuthManager($sessionManager);
             $context->setAuthManager($authManager);
         }
