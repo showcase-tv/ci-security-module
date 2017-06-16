@@ -56,6 +56,7 @@ class SessionRoleManager implements RoleManagerInterface
         if ($this->roles === null) {
             $this->roles = $this->getAttributes();
         }
+
         return $this->roles;
     }
 
@@ -74,6 +75,7 @@ class SessionRoleManager implements RoleManagerInterface
         if (count(array_intersect($roles, $permission)) === 0) {
             return false;
         };
+
         return true;
     }
 
